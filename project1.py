@@ -468,33 +468,30 @@ def show_comments_table():
 
 #streamlit code
 
+st.title(":blue[Youtube Data Harversting And Warhousing - Project1]")
+st.header(":blue[View Here]")
 with st.sidebar:
-    st.title(":blue[Youtube Data Harversting And Warhousing - Project1]")
-    st.header("Skills Used")
-    st.caption("Python")
-    st.caption("MongoDB & SQL")
-    st.caption("API Integration")
-    st.caption("youtube Data")
-channel_id=st.text_input("Enter The Channel ID")
+    st.header(":blue[Get Started!!!]")
+    channel_id=st.text_input(":blue[Enter The Channel ID]")
+with st.sidebar:
+    if st.button("Collect and store Data to MongoDB"):
+        ch_ids=[]
+        db=client["Youtube_data"]
+        coll1=db["channel_details"]
+        for ch_data in coll1.find({},{"_id":0,"channel_information":1}):
+            ch_ids.append(ch_data["channel_information"]["Channel_Id"])
 
-if st.button("Collect and store Data to MongoDB"):
-    ch_ids=[]
-    db=client["Youtube_data"]
-    coll1=db["channel_details"]
-    for ch_data in coll1.find({},{"_id":0,"channel_information":1}):
-        ch_ids.append(ch_data["channel_information"]["Channel_Id"])
-
-    if channel_id in ch_ids:
-        st.success("Channel Info already exists") 
-    else:
-        insert=channel_details(channel_id)
-        st.success(insert) 
-
-if st.button("Migrate to SQL"):
-    Table=tables()
-    st.success(Table)
-
-show_table=st.radio("Select the Table to View",("CHANNELS","PLAYLISTS","VIDEOS","COMMENTS"))
+        if channel_id in ch_ids:
+            st.success("Channel Info already exists") 
+        else:
+            insert=channel_details(channel_id)
+            st.success(insert) 
+with st.sidebar:
+    if st.button("Migrate to SQL"):
+        Table=tables()
+        st.success(Table)
+with st.sidebar:
+    show_table=st.radio(":blue[Select the Table to View]",("CHANNELS","PLAYLISTS","VIDEOS","COMMENTS"))
 
 if show_table=="CHANNELS":
     show_channels_table()
@@ -506,6 +503,7 @@ elif show_table=="COMMENTS":
     show_comments_table()
 
 
+
 #SQL connection
 mydb=psycopg2.connect(host="localhost",
                     user="postgres",
@@ -514,7 +512,7 @@ mydb=psycopg2.connect(host="localhost",
                     port="5432")
 cursor = mydb.cursor()
 
-question=st.selectbox("Select Question",("1.All the videos and the Channel name",
+question=st.selectbox(":blue[Select Question]",("1.All the videos and the Channel name",
                                          "2.Channels with most number of videos",
                                          "3.10 most viewed videos",
                                          "4.Comments in videos",
