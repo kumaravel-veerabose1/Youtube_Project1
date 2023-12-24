@@ -478,8 +478,8 @@ def show_comments_table():
 
 #streamlit code
 
-st.markdown(":blue[Youtube Data Harvesting And Warehousing - Project1")
-st.markdown(":blue[View Here]")
+st.title(":blue[Youtube Data Harvesting And Warehousing - Project1")
+st.header(":blue[View Here]")
 
 with st.sidebar:
     st.header(":blue[Get Started!!!]")
