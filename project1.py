@@ -158,6 +158,16 @@ def channel_details(channel_id):
     
     return "upload completed successfully" 
 
+def get_channel_name():
+
+    ch_list=[]
+    db=client["Youtube_data"]
+    coll1=db["channel_details"]
+    for ch_data in coll1.find({},{"_id":0,"channel_information":1}):
+        ch_list.append(ch_data["channel_information"])
+    df=pd.DataFrame(ch_list)
+    return df['Channel_Name']
+
 
 # table creation
 def channels_table():
@@ -468,24 +478,33 @@ def show_comments_table():
 
 #streamlit code
 
-st.title(":blue[Youtube Data Harversting And Warhousing - Project1]")
-st.header(":blue[View Here]")
+st.markdown(":blue[Youtube Data Harvesting And Warehousing - Project1")
+st.markdown(":blue[View Here]")
+
 with st.sidebar:
     st.header(":blue[Get Started!!!]")
-    channel_id=st.text_input(":blue[Enter The Channel ID]")
-with st.sidebar:
-    if st.button("Collect and store Data to MongoDB"):
-        ch_ids=[]
-        db=client["Youtube_data"]
-        coll1=db["channel_details"]
-        for ch_data in coll1.find({},{"_id":0,"channel_information":1}):
-            ch_ids.append(ch_data["channel_information"]["Channel_Id"])
+    with st.form("channel_form", clear_on_submit = True):
+        channel_id = st.text_input("Enter The Channel ID")
+        submit_button = st.form_submit_button("Collect and store Data to MongoDB")
 
-        if channel_id in ch_ids:
-            st.success("Channel Info already exists") 
-        else:
-            insert=channel_details(channel_id)
-            st.success(insert) 
+if submit_button:
+    ch_ids = []
+    db = client["Youtube_data"]
+    coll1 = db["channel_details"]
+    
+    for ch_data in coll1.find({}, {"_id": 0, "channel_information": 1}):
+        ch_ids.append(ch_data["channel_information"]["Channel_Id"])
+
+    if channel_id in ch_ids:
+        st.success("Channel Info already exists")
+    else:
+        insert = channel_details(channel_id)
+        st.success(insert)
+    
+with st.sidebar:
+    channels_list = get_channel_name()
+    selected_category = st.sidebar.selectbox('Select Channel', channels_list)
+
 with st.sidebar:
     if st.button("Migrate to SQL"):
         Table=tables()
